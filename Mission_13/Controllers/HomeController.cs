@@ -80,6 +80,8 @@ namespace Mission_13.Controllers
         [HttpGet]
         public IActionResult Add()
         {
+            ViewBag.Teams = _context.Teams.ToList();
+
             Bowler b = new Bowler();
 
             return View(b);

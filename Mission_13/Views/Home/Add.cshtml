@@ -7,7 +7,6 @@
 <form method="post" asp-controller="Home" asp-action="Add">
 
     <div class="form-group">
-        <label asp-for="BowlerID"></label>
         <input asp-for="BowlerID" class="form-control" type="hidden"/>
     </div>
 
@@ -48,12 +47,18 @@
 
     <div class="form-group">
         <label asp-for="BowlerPhoneNumber">Phone Number</label>
-        <input asp-for="BowlerID" class="form-control" />
+        <input asp-for="BowlerPhoneNumber" class="form-control" />
     </div>
 
     <div class="form-group">
-        <label asp-for="TeamID">Team ID</label>
-        <input asp-for="TeamID" class="form-control" />
+        <label asp-for="TeamID">Team Name</label>
+        <select asp-for="TeamID" class="form-control">
+            <option>Select a Team:</option>
+            @foreach (Team t in ViewBag.Teams)
+            {
+                <option value="@t.TeamID">@t.TeamName</option>
+            }
+        </select>
     </div>
 
     <button class="btn" style="outline-style:auto; outline-color:lightblue" type="submit">Add New Bowler</button>
