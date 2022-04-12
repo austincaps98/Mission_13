@@ -4,34 +4,154 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Mission_13.Models;
+using Mission_13.Models.ViewModels;
 
 namespace Mission_13.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private BowlersDbContext _context { get; set; }
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(BowlersDbContext temp)
         {
-            _logger = logger;
+            _context = temp;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            //var bowlers = _context.Bowlers.Include(x => x.Team).ToList();
+            //ViewBag.Bowlers = _context.Teams.ToList();
+            //var bowlers = _repo.Bowlers;
+
+            ViewBag.Teams = _context.Teams
+                .Where(x => x.TeamName != "")
+                .Select(x => x.TeamName)
+                .Distinct()
+                .OrderBy(x => x)
+                .ToList();
+
+            var x = new BowlersViewModel
+            {
+                Bowlers = _context.Bowlers.Include(x => x.Team)
+                .OrderBy(x => x.BowlerLastName)
+                .ThenBy(x => x.BowlerFirstName),
+
+                filter = new Filter
+                {
+                    TeamName = null
+                }
+            };
+
+            return View(x);
         }
 
-        public IActionResult Privacy()
+        [HttpPost]
+        public IActionResult Index(BowlersViewModel model)
         {
-            return View();
+            ViewBag.Teams = _context.Teams
+                .Where(x => x.TeamName != "")
+                .Select(x => x.TeamName)
+                .Distinct()
+                .OrderBy(x => x)
+                .ToList();
+
+            string teamName = model.filter.TeamName;
+
+            var x = new BowlersViewModel
+            {
+                Bowlers = _context.Bowlers.Include(x => x.Team)
+                .Where(x => x.Team.TeamName == teamName)
+                .OrderBy(x => x.BowlerLastName)
+                .ThenBy(x => x.BowlerFirstName),
+
+                filter = new Filter
+                {
+                    TeamName = teamName
+                }
+            };
+
+            return View(x);
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        [HttpGet]
+        public IActionResult Add()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            Bowler b = new Bowler();
+
+            return View(b);
+        }
+
+        [HttpPost]
+        public IActionResult Add(Bowler b)
+        {
+            if (ModelState.IsValid)
+            {
+                if (b.BowlerID == 0)
+                {
+                    _context.Add(b);
+                    _context.SaveChanges();
+
+                }
+                else
+                {
+                    _context.Update(b);
+                    _context.SaveChanges();
+                }
+
+                return View("Confirmation", b);
+            }
+            else
+            {
+                return View();
+            }
+        }
+
+        [HttpGet]
+        public IActionResult Edit(int bowlerID)
+        {
+            ViewBag.Teams = _context.Teams.ToList();
+
+            var bowler = _context.Bowlers.Single(b => b.BowlerID == bowlerID);
+
+            return View(bowler);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Bowler b)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Update(b);
+                _context.SaveChanges();
+
+                return View("Confirmation");
+            }
+            else
+            {
+                return View(b);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult Delete(int bowlerID)
+        {
+            var bowler = _context.Bowlers.Single(b => b.BowlerID == bowlerID);
+
+            return View(bowler);
+        }
+
+        [HttpPost]
+        public IActionResult Delete(Bowler b)
+        {
+
+            _context.Bowlers.Remove(b);
+            _context.SaveChanges();
+
+            return View("Confirmation");
         }
     }
 }

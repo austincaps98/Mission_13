@@ -2,7 +2,64 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@using Mission_13.Models.ViewModels
+
+@model BowlersViewModel
+
+<h1>Bowlers</h1>
+@if (Model.filter.TeamName != null)
+{
+    <h2>Showing bowlers for team: @Model.filter.TeamName</h2>
+}
+
+<a class="btn btn-lg my-2" style="background-color:lightblue" asp-controller="Home" asp-action="Add"
+    >Add New Bowler</a>
+<form class="my-2" method="post" asp-controller="Home" asp-action="Index">
+    <div class="form-group">
+        <label asp-for="@Model.filter.TeamName"><strong>Filter By Team Name:</strong></label>
+        <select class="form-control" asp-for="@Model.filter.TeamName">
+            <option>Select a Team:</option>
+            @foreach (string t in ViewBag.Teams)
+            {
+                <option value="@t">@t</option>
+            }
+        </select>
+    </div>
+    <div>
+        <button type="submit" class="btn mb-2" style="background-color:lightblue">Filter</button>
+        <a class="btn mb-2" style="background-color:lightblue"
+           asp-controller="Home" asp-action="Index">Home</a>
+    </div>
+</form>
+
+@foreach (var b in Model.Bowlers)
+{
+    <div class="card m-1 p-1">
+        <div class="card-header"  style="background-color:lightblue">
+            <h5 class="text-light">Bowler ID# @b.BowlerID</h5>
+            <h5>@b.BowlerFirstName @b.BowlerMiddleInit @b.BowlerLastName</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Address:</strong> @b.BowlerAddress</p>
+            <p><strong>City:</strong> @b.BowlerCity</p>
+            <p><strong>State:</strong> @b.BowlerState</p>
+            <p><strong>Zip:</strong> @b.BowlerZip</p>
+            <p><strong>Phone Number:</strong> @b.BowlerPhoneNumber</p>
+
+            @if (Model.filter.TeamName != null)
+            {
+                <p style="background-color:yellow"><strong>Team:</strong> @b.Team.TeamName</p>
+            }
+            else
+            {
+                <p><strong>Team:</strong> @b.Team.TeamName</p>
+            }
+
+        </div>
+
+    <div class="m-1 p-1">
+            <a class="btn btn-sm" style="background-color:lightblue" asp-controller="Home" asp-action="Edit" asp-route-bowlerID="@b.BowlerID">Edit</a>
+            <a class="btn btn-sm" style="outline-style:auto; outline-color:lightblue" asp-controller="Home" asp-action="Delete" asp-route-bowlerID="@b.BowlerID">Delete</a>
+        </div>
+    </div>
+}

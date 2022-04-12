@@ -1,0 +1,66 @@
+﻿@{
+    ViewData["Title"] = "Delete Bowler";
+}
+
+@model Bowler
+
+<h1>Delete Bowler</h1>
+
+<h4>Are you sure you want to delete the record for the following bolwer?</h4>
+
+<form method="post" asp-controller="Home" asp-action="Delete">
+
+    <div class="form-group">
+        <label asp-for="BowlerID"></label>
+        <input asp-for="BowlerID" class="form-control" type="hidden" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="BowlerFirstName">First Name</label>
+        <input asp-for="BowlerFirstName" class="form-control" disabled/>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="BowlerMiddleInit">Middle Initial</label>
+        <input asp-for="BowlerMiddleInit" class="form-control" disabled/>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="BowlerLastName">Last Name</label>
+        <input asp-for="BowlerLastName" class="form-control" disabled/>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="BowlerAddress">Address</label>
+        <input asp-for="BowlerAddress" class="form-control" disabled/>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="BowlerCity">City</label>
+        <input asp-for="BowlerCity" class="form-control" disabled/>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="BowlerState">State</label>
+        <input asp-for="BowlerState" class="form-control" disabled/>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="BowlerZip">Zip</label>
+        <input asp-for="BowlerZip" class="form-control" disabled/>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="BowlerPhoneNumber">Phone Number</label>
+        <input asp-for="BowlerID" class="form-control" disabled/>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="TeamID">Team ID</label>
+        <input asp-for="TeamID" class="form-control" disabled/>
+    </div>
+
+    <button class="btn" style="outline-style:auto; outline-color:lightblue" type="submit">Confirm Delete</button>
+    <a class="btn" style="background-color:lightblue" asp-controller="Home" asp-action="Index">Cancel</a>
+
+</form>
